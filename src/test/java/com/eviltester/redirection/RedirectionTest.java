@@ -105,7 +105,7 @@ public class RedirectionTest {
 
 
     @Test
-    public void explorePhantom() throws IOException {
+    public void exploreUsingChrome() throws IOException {
 
         List<UserAgentString> failedAgents = new ArrayList<UserAgentString>();
         List<UserAgentString> passedAgents = new ArrayList<UserAgentString>();
@@ -123,6 +123,7 @@ public class RedirectionTest {
         List<String> redirectFrom = new ArrayList<String>();
         // TODO: CHANGE THESE TO YOUR SITE URLS
         redirectFrom.add("https://youtube.com");
+        //redirectFrom.add("https://testpages.herokuapp.com/styled/redirect/user-agent-redirect-test");
 
         // to find sites that exhibit this redirect behaviour
         // try searching for:
@@ -131,10 +132,13 @@ public class RedirectionTest {
         // should I clear cookies after every redirect attempt?
         boolean clearCookies = true;
 
-        // consider it a redirect if the URL starts with ...
-        // e.g. String redirectToStartsWith = "https://mobile.";
-        // String redirectToStartsWith = "https://mob.";
-        String redirectToStartsWith = "https://m.";
+        // consider it a redirect if the URL contains ... makes it a bit more generic than starts with
+        // e.g. String redirectToContain = "https://mobile.";
+        // String redirectToContain = "https://mob.";
+        String redirectToContain = "https://m.";
+
+        // for the https://testpages.herokuapp.com/styled/redirect/user-agent-redirect-test
+        //String redirectToContain = "/mobile/";
 
         for(UserAgentString userAgent : toCheck.userAgents.values()){
 
@@ -168,7 +172,7 @@ public class RedirectionTest {
 
                 String redirectedTo = driver.getCurrentUrl();
 
-                if(!exceptionRaised && redirectedTo.startsWith(redirectToStartsWith)){
+                if(!exceptionRaised && redirectedTo.contains(redirectToContain)){
                     System.out.print("PASSED : ");
                     passedAgents.add(userAgent);
                     passedCount++;
@@ -193,7 +197,7 @@ public class RedirectionTest {
         System.out.println("");
         System.out.println("The following " + failedAgents.size() + " user agents failed to redirect");
         for(String toRedirectFrom : redirectFrom){
-            System.out.println(toRedirectFrom + " to " + redirectToStartsWith);
+            System.out.println(toRedirectFrom + " to " + redirectToContain);
         }
         System.out.println("=================================================");
         for(UserAgentString failed : failedAgents){
@@ -203,7 +207,7 @@ public class RedirectionTest {
         output.println("<html><head><title>HTML Output of User-Agent Check</title></head><body>");
         output.println("<b>The following " + failedAgents.size() + " user agents failed to redirect</b>");
         for(String toRedirectFrom : redirectFrom){
-            output.println("<p>" + toRedirectFrom + " to " + redirectToStartsWith + "</p>");
+            output.println("<p>" + toRedirectFrom + " to " + redirectToContain + "</p>");
         }
 
         output.println("<hr/><p><strong>Failed</strong></p><ul>");
